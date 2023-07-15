@@ -11,7 +11,6 @@ const getCurrentNPMVersion = function () {
         reject(err);
         return;
       }
-      console.log('stdout', stdout);
       resolve(stdout);
     });
   });
