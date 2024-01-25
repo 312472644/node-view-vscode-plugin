@@ -1,8 +1,8 @@
 {
-  "name": "assist-plugin",
-  "displayName": "assist-plugin",
-  "description": "",
-  "version": "0.0.1",
+  "name": "xx-node-version",
+  "displayName": "View Node Version",
+  "description": "查看当前使用的node版本，切换node版本",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -10,9 +10,15 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
+  "publisher": "xx312472644",
+  "icon": "images/icon.jpg",
   "main": "./extension.js",
+  "author": {
+    "name": "xx",
+    "email": "xx312472644@163.com"
+  },
   "contributes": {
     "commands": [
       {
@@ -25,7 +31,8 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "pnpm run lint",
-    "test": "node ./test/runTest.js",
+    "login:vsix": "vsce login xx312472644",
+    "publish:vsix": "vsce publish",
     "build:vsix": "vsce package"
   },
   "devDependencies": {
@@ -38,5 +45,9 @@
     "mocha": "^10.2.0",
     "typescript": "^5.1.3",
     "@vscode/test-electron": "^2.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/flaw_du/vscode-npm-plugin.git"
   }
 }
