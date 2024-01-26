@@ -37,8 +37,8 @@ const generatePickItem = function (list, statusBarItem) {
           vscode.window.showErrorMessage(`nvm use ${label} 命令执行失败`);
           return;
         }
-        vscode.window.showInformationMessage(`切换NPM${label}版本成功`);
-        statusBarItem.text = `NPM: ${label}`;
+        vscode.window.showInformationMessage(`切换Node${label}版本成功`);
+        statusBarItem.text = `Node: v${label}`;
       });
     }
     quickPick.hide();
@@ -48,7 +48,7 @@ const generatePickItem = function (list, statusBarItem) {
   quickPick.show();
 };
 
-const npmVersionChangeHandle = function (statusBarItem) {
+const nodeVersionChangeHandle = function (statusBarItem) {
   cp.exec('nvm ls', (err, stdout, stderr) => {
     if (err) {
       vscode.window.showErrorMessage(`nvm ls 命令执行失败`);
@@ -59,4 +59,4 @@ const npmVersionChangeHandle = function (statusBarItem) {
   });
 };
 
-module.exports = { npmVersionChangeHandle };
+module.exports = { nodeVersionChangeHandle };

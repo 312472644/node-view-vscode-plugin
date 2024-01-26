@@ -1,22 +1,22 @@
 const vscode = require('vscode');
-const { npmVersionChangeHandle } = require('./command/npmVersionChange');
-const { createNpmStatusBarItem } = require('./command/npmStatusBar');
+const { nodeVersionChangeHandle } = require('./command/nodeVersionChange');
+const { createNodeStatusBarItem } = require('./command/nodeStatusBar');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
   // 生成StatusBarItem状态栏
-  const statusBarItem = createNpmStatusBarItem(vscode);
-  // npm版本切换
-  const npmVersionChangeCmd = vscode.commands.registerCommand('npm-version-change', function () {
-    npmVersionChangeHandle(statusBarItem);
+  const statusBarItem = createNodeStatusBarItem(vscode);
+  // node版本切换
+  const nodeVersionChangeCmd = vscode.commands.registerCommand('node-version-change', function () {
+    nodeVersionChangeHandle(statusBarItem);
   });
-  // npm版本切换状态栏
-  const npmVersionChangeStatusBarCmd = vscode.commands.registerCommand('npm-version-change-status-bar', function () {
-    npmVersionChangeHandle(statusBarItem);
+  // node版本切换状态栏
+  const nodeVersionChangeStatusBarCmd = vscode.commands.registerCommand('node-version-change-status-bar', function () {
+    nodeVersionChangeHandle(statusBarItem);
   });
-  context.subscriptions.push(npmVersionChangeCmd, npmVersionChangeStatusBarCmd, statusBarItem);
+  context.subscriptions.push(nodeVersionChangeCmd, nodeVersionChangeStatusBarCmd, statusBarItem);
 }
 
 function deactivate() {}
