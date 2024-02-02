@@ -2,7 +2,7 @@
   "name": "xx-node-version",
   "displayName": "View Node Version",
   "description": "查看当前使用的node版本，切换node版本",
-  "version": "0.1.1",
+  "version": "0.2.2",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -22,7 +22,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "node-version-change",
+        "command": "node-command-change",
         "title": "Node版本切换",
         "category": "Node"
       }
