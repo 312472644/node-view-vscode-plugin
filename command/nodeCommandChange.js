@@ -51,16 +51,14 @@ const getNodeVersionList = function (list) {
 };
 
 /**
- * 获取Npm 代理地址列表
+ * 获取NRM代理地址列表
  * @param {*} list
  * @returns
  */
-const getRegistryList = function (list) {
-  const resultList = [
-    { label: 'Node Registry', kind: QuickPickItemKind.Separator, type: 'Category' },
-    { label: 'Node Registry', type: 'Category' },
-  ];
+const getNrmRegList = function (list) {
   const registryList = transformStdoutList(list) || [];
+  const nrmRegList = [];
+
   registryList.forEach(item => {
     const result = item
       .replaceAll('-', '')
@@ -72,7 +70,7 @@ const getRegistryList = function (list) {
       if (isCurrent) result.shift();
       const icon = isCurrent ? SELECTED_ICON : ICON;
       const [label, value] = result;
-      resultList.push({
+      nrmRegList.push({
         label: `${icon}${label}`,
         command: `npm config set registry=${value}`,
         description: value,
@@ -81,7 +79,48 @@ const getRegistryList = function (list) {
       });
     }
   });
-  return resultList;
+  return nrmRegList;
+};
+
+/**
+ * 从默认配置获取列表
+ * @param {Array} list
+ * @returns
+ */
+const getDefaultRegList = function (list = []) {
+  const defaultList = [];
+  list.forEach(item => {
+    const { label, value, isCurrent } = item;
+    const icon = isCurrent ? SELECTED_ICON : ICON;
+    defaultList.push({
+      label: `${icon}${label}`,
+      command: `npm config set registry=${value}`,
+      description: value,
+      type: 'NRM',
+      isCurrent,
+    });
+  });
+  return defaultList;
+};
+
+/**
+ * 获取Npm 代理地址列表
+ * @param {Array} list
+ * @param {String} listOrigin 'NRM|Default'
+ * @returns
+ */
+const getRegistryList = function (list = [], listOrigin = 'NRM') {
+  const resultList = [
+    { label: 'Node Registry', kind: QuickPickItemKind.Separator, type: 'Category' },
+    { label: 'Node Registry', type: 'Category' },
+  ];
+  let registryList = [];
+  if (listOrigin === 'Default') {
+    registryList = getDefaultRegList(list);
+  } else {
+    registryList = getNrmRegList(list);
+  }
+  return [...resultList, ...registryList];
 };
 
 /**
@@ -127,11 +166,18 @@ const nodeCommandChangeHandle = async function (statusBarItem) {
   const nodeStdout = await execNodeCommand('nvm ls');
   nodeVersionsList.push(...getNodeVersionList(nodeStdout));
   try {
+    // 从nrm获取数据源
     const nrmStdout = await execNodeCommand('nrm ls');
     npmRegistryList.push(...getRegistryList(nrmStdout));
+    console.log('nrm 已经安装~');
   } catch {
     // 未安装nrm 取默认列表
-    npmRegistryList.push(...NPM_REGISTRY_LIST);
+    const nrmStdout = await execNodeCommand('npm config get registry');
+    NPM_REGISTRY_LIST.forEach(item => {
+      item.isCurrent = item.value === nrmStdout.replace('\n', '');
+    });
+    npmRegistryList.push(...getRegistryList(NPM_REGISTRY_LIST, 'Default'));
+    console.log('nrm 未安装！！!');
   }
   generatePickItem([...nodeVersionsList, ...npmRegistryList], statusBarItem);
 };

@@ -24,7 +24,7 @@ const NPM_REGISTRY_LIST = [
   { label: 'yarn', value: 'https://registry.yarnpkg.com/' },
   { label: 'tencent', value: 'https://mirrors.cloud.tencent.com/npm/' },
   { label: 'cnpm', value: 'https://r.cnpmjs.org/' },
-  { label: 'taobao', value: 'https://registry.npmmirror.com' },
+  { label: 'taobao', value: 'https://registry.npmmirror.com/' },
   { label: 'npmMirror', value: 'https://skimdb.npmjs.com/registry/' },
 ];
 
