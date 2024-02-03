@@ -2,7 +2,7 @@
   "name": "xx-node-version",
   "displayName": "View Node Version",
   "description": "查看当前使用的node版本，切换node版本",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "engines": {
     "vscode": "^1.80.0"
   },
