@@ -1,5 +1,5 @@
 // @ts-nocheck
-const { window, QuickPickItemKind } = require('vscode');
+const { window, QuickPickItemKind, ProgressLocation } = require('vscode');
 const { execNodeCommand, NPM_REGISTRY_LIST } = require('../utils');
 
 const ICON = '🔹';
@@ -155,6 +155,30 @@ const generatePickItem = function (list, statusBarItem) {
 };
 
 /**
+ * 进度条
+ * @returns {Promise<{report:({message:string, increment:number})=>void}>}
+ */
+const showProgress = function () {
+  return window.withProgress(
+    {
+      location: ProgressLocation.Notification,
+      title: '正在获取数据源，请稍后...',
+      cancellable: false,
+    },
+    progress => {
+      progress.report({ increment: 0 });
+      setTimeout(() => progress.report({ increment: 50 }), 500);
+      setTimeout(() => progress.report({ increment: 80 }), 800);
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(progress);
+        }, 1000);
+      });
+    }
+  );
+};
+
+/**
  * 获取Node版本命令
  * @param {*} statusBarItem
  */
@@ -163,6 +187,8 @@ const nodeCommandChangeHandle = async function (statusBarItem) {
   const nodeVersionsList = [];
   // npm 代理地址
   const npmRegistryList = [];
+  // 进度条
+  const progress = await showProgress();
   const nodeStdout = await execNodeCommand('nvm ls');
   nodeVersionsList.push(...getNodeVersionList(nodeStdout));
   try {
@@ -170,14 +196,16 @@ const nodeCommandChangeHandle = async function (statusBarItem) {
     const nrmStdout = await execNodeCommand('nrm ls');
     npmRegistryList.push(...getRegistryList(nrmStdout));
     console.log('nrm 已经安装~');
-  } catch {
+  } catch (error) {
     // 未安装nrm 取默认列表
     const nrmStdout = await execNodeCommand('npm config get registry');
     NPM_REGISTRY_LIST.forEach(item => {
       item.isCurrent = item.value === nrmStdout.replace('\n', '');
     });
     npmRegistryList.push(...getRegistryList(NPM_REGISTRY_LIST, 'Default'));
-    console.log('nrm 未安装！！!');
+    console.log('nrm 未安装！！!', error);
+  } finally {
+    progress.report({ increment: 100 });
   }
   generatePickItem([...nodeVersionsList, ...npmRegistryList], statusBarItem);
 };
